@@ -1,39 +1,52 @@
-  
-const form_Add = document.querySelector('.form-add-todo')
-const div = document.querySelector('.todos-container')
+const form = document.querySelector(".form-add-todo")
+const ul = document.querySelector(".todos-container")
+const input = document.querySelector(".form-search input")
+const toDoContent = Array.from(ul.children)
 
-const newLi =  (inputValueADD) => {
-    if(inputValueADD.length){
-        div.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
-        <span>${inputValueADD}</span>
+const insertNewToDo = event => {
+    event.preventDefault()
+    const inputToDoValue = event.target.add.value.trim()   
+    if(inputToDoValue.length){
+        ul.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>${inputToDoValue}</span>
         <i class="far fa-trash-alt delete"></i>
-        </li>`     
+        </li>`
         event.target.reset()
     }
+}    
+const removeToDo = event => {
+    const clickedElement = event.target
+    const arrayElementClasslist = Array.from(clickedElement.classList)
+    arrayElementClasslist.includes('delete') ? clickedElement.parentElement.remove() : ''
 }
 
-const addLi = event => {
-    event.preventDefault()
+const compareEvent = event => {
+    const inputCompareValue = event.target.value.trim().toLowerCase()
+    hideToDo(inputCompareValue)
+    showToDo(inputCompareValue)
 
-    const inputValueADD = event.target.add.value.trim() 
-    newLi(inputValueADD)
-    
 }
 
-const removeLi = event =>{
-    clickedElement = event.target
-    const classRefTRASH = Array.from(clickedElement.classList)
-    
-    classRefTRASH.includes('delete') ? clickedElement.parentElement.remove() :  console.log(item_Node)
-    
+function showToDo(inputCompareValue) {
+    const toDoContent = Array.from(ul.children)
+    toDoContent.filter(itemToDo => itemToDo.textContent.toLowerCase().includes(inputCompareValue))
+    .forEach( itemToDo => {
+    itemToDo.classList.remove('hidden')
+    itemToDo.classList.add('d-flex')
+    })   
 }
 
-form_Add.addEventListener('submit', addLi)
-  
-div.addEventListener('click', removeLi)  
+function hideToDo(inputCompareValue) {
+    const toDoContent = Array.from(ul.children)
+    toDoContent.filter(itemToDo => ! itemToDo.textContent.toLowerCase().includes(inputCompareValue))
+    .forEach( itemToDo => {
+    itemToDo.classList.remove('d-flex')
+    itemToDo.classList.add('hidden')
+    })   
+}
+//------------------BLOCO DE CODIGO---------------------------------
+form.addEventListener('submit', insertNewToDo )
 
+ul.addEventListener('click', removeToDo)
 
-
-
-
-    
+input.addEventListener("input", compareEvent) 
